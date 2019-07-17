@@ -23,6 +23,10 @@ export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-ppc64el/"
 apt update
 apt upgrade
 apt install python2.7 python-pip
+export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=/usr/lib/python2.7/site-packages
+export PYTHON_BIN_PATH=/usr/bin/python
+export PYTHON_LIB_PATH=/usr/lib/python2.7/site-packages
 ~~~
 
 ## OpenBLAS 0.3.5
@@ -44,7 +48,7 @@ cd boost_1_66_0
 ./b2 dll-path="$HOMEPATH/inst/lib" install
 ~~~
 
-## scipy, h5py, future, keras
+## scipy, h5py, future, keras, mock, enum34, wheel
 
 ~~~
 
@@ -60,10 +64,13 @@ chmod +x /usr/local/bin/bazel
 ## (optional)TensorRT
 
 ~~~
-download TensorRT.tar and untar
-cd TensorRT
-cp lib/* /usr/lib/
-cp include/* /usr/include/
+download <TensorRT-5.1.3.6-version>.tar and untar
+cd TensorRT-5.1.3.6
+cd python && install 
+cd uff && install
+export LD_LIBRARY_PATH=/path/TensorRT-5.1.3.6/lib:$LD_LIBRARY_PATH
+cp TensorRT-5.1.3.6/lib/* /usr/lib/
+cp TensorRT-5.1.3.6/include/* /usr/include/
 ~~~
 
 ## Tensorflow
