@@ -78,6 +78,7 @@ cp TensorRT-5.1.3.6/include/* /usr/include/
 ~~~
 export PYTHON_BIN_PATH="/usr/bin/python"
 bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --action_env=PYTHON_BIN_PATH=$PYTHON_BIN_PATH --test_env=PYTHON_BIN_PATH=$PYTHON_BIN_PATH --distinct_host_configuration=false
-
+bazel-bin/tensorflow/tools/pip_package/build_pip_package ~/tensorflow_package
+pip install ~/tensorflow_package/tensorflow-<version>.whl
 ~~~
 
