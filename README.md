@@ -51,7 +51,8 @@ cd boost_1_66_0
 ## scipy, h5py, future, keras, mock, enum34, wheel
 
 ~~~
-
+apt-get install python-scipy
+...
 ~~~
 
 ## bazel
@@ -82,7 +83,7 @@ cd tensorflow-1.14
 ./configure
 bazel clean
 bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --action_env=PYTHON_BIN_PATH=$PYTHON_BIN_PATH --test_env=PYTHON_BIN_PATH=$PYTHON_BIN_PATH --distinct_host_configuration=false
-bazel-bin/tensorflow/tools/pip_package/build_pip_package ~/tensorflow_package
-pip install ~/tensorflow_package/tensorflow-<version>.whl
+bazel-bin/tensorflow/tools/pip_package/build_pip_package ../tensorflow_package
+pip install ../tensorflow_package/tensorflow-<version>.whl
 ~~~
 
