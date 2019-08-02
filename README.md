@@ -93,7 +93,8 @@ rsync -avP output/bazel /usr/bin
 ## scipy, h5py, future, keras, mock, enum34, wheel
 
 ~~~
-apt-get install python-scipy 
+apt-get install python-scipy python-h5py
+pip install future keras_applications keras_preprocessing wheel autograd enum34 mock
 ...
 ~~~
 
