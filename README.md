@@ -1,4 +1,4 @@
-# Tensorflow r1.14 GPU cuda-10.1
+# Tensorflow r1.14 cuda-10.1
 ## Environment
 
 ~~~
@@ -51,6 +51,41 @@ which protoc
 protoc --version
 ~~~
 
+## bazel-0.25.0
+download a pre-builted bazel bin from [here](https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/readme.html)
+~~~
+mv bazel_bin_<version> /usr/local/bin/bazel 
+chmod +x /usr/local/bin/bazel
+~~~
+
+build bazel from source
+~~~
+apt-get install zip unzip rsync
+wget https://github.com/bazelbuild/bazel/releases/download/0.25.0/bazel-0.25.0-dist.zip
+uzip bazel-0.25.0-dist.zip
+env EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash ./compile.sh
+# Build successful! Binary is here: /home/bazel-0.25.0/output/bazel
+rsync -avP output/bazel /usr/bin
+~~~
+
+## Advance Toolchain 12.0
+[Doc site](https://developer.ibm.com/linuxonpower/advance-toolchain/advtool-installation/)
+~~~
+wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/trusty/6976a827.gpg.key
+sudo apt-key add 6976a827.gpg.key
+vi /etc/apt/sources.list
+(Configure the Advance Toolchain repositories by adding the following line to /etc/apt/sources.list:) 
+    deb ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu xenial at12.0
+apt-get update
+apt-get install advance-toolchain-at12.0-runtime \
+                advance-toolchain-at12.0-devel \
+                advance-toolchain-at12.0-perf \
+                advance-toolchain-at12.0-mcore-libs
+export PATH=/opt/at12.0/bin:/opt/at12.0/sbin:$PATH
+# check gcc before build, should be AT11.0
+which gcc
+~~~
+
 ## OpenBLAS 0.3.5
 
 ~~~
@@ -68,25 +103,6 @@ tar xzf boost_1_66_0.tar.gz
 cd boost_1_66_0
 ./bootstrap.sh --with-toolset=gcc --prefix=/usr
 ./b2 dll-path="/usr/lib" install
-~~~
-
-
-## bazel-0.25.0
-download a pre-builted bazel bin from [here](https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/readme.html)
-~~~
-mv bazel_bin_<version> /usr/local/bin/bazel 
-chmod +x /usr/local/bin/bazel
-~~~
-
-build bazel from source
-~~~
-apt-get install zip unzip rsync
-wget https://github.com/bazelbuild/bazel/releases/download/0.25.0/bazel-0.25.0-dist.zip
-uzip bazel-0.25.0-dist.zip
-env EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash ./compile.sh
-# Build successful! Binary is here: /home/bazel-0.25.0/output/bazel
-rsync -avP output/bazel /usr/bin
-
 ~~~
 
 
@@ -115,6 +131,40 @@ cp TensorRT-5.1.3.6/include/* /usr/include/
 ~~~
 export PYTHON_BIN_PATH="/usr/bin/python"
 export TF_CUDA_PATHS=/usr,/usr/local/cuda
+# check gcc before build, should be AT11.0
+which gcc
+
+# fix build error
+-------------------------------------
+vim /opt/at12.0/include/bits/floatn.h
+-------------------------------------
+/* Defined to 1 if the current compiler invocation provides a
+   floating-point type with the IEEE 754 binary128 format, and this glibc
+   includes corresponding *f128 interfaces for it.  */
+#if defined _ARCH_PWR8 && defined __LITTLE_ENDIAN__ && (_CALL_ELF == 2) \
+&& defined __FLOAT128__
+# define __HAVE_FLOAT128 1
+#else
+# define __HAVE_FLOAT128 0
+#endif
+
+/* add the following block of fix tensorflow build error */
+#if CUDART_VERSION
+#undef __HAVE_FLOAT128
+#define __HAVE_FLOAT128 0
+#endif
+
+/* Defined to 1 if __HAVE_FLOAT128 is 1 and the type is ABI-distinct
+   from the default float, double and long double types in this glibc.  */
+#if __HAVE_FLOAT128
+-------------------------------------
+vi ./tensorflow/compiler/tf2tensorrt/convert/convert_nodes.cc
+-------------------------------------
+//line 4195
+-  constexpr auto get_matrix_op =
++  const/*expr*/ auto get_matrix_op =
+-------------------------------------
+
 git clone -b r1.14 https://github.com/tensorflow/tensorflow.git tensorflow-1.14
 cd tensorflow-1.14
 ./configure
