@@ -29,7 +29,7 @@ export PYTHON_BIN_PATH=/usr/bin/python
 export PYTHON_LIB_PATH=/usr/lib/python2.7/site-packages
 ~~~
 
-## protoc-3.7.1
+## protobuf-3.7.1
 ~~~
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protobuf-all-3.7.1.tar.gz
 tar -zxvf protobuf-all-3.7.1.tar.gz
@@ -49,6 +49,20 @@ ldconfig
 
 which protoc
 protoc --version
+~~~
+
+## protobuf-3.7.1 (--cpp_implementation) Python from source
+it would take extrem long time for protobuf.ParseFromString if whithout `--cpp_implementation`
+~~~
+cd protobuf-3.7.1/python/
+python setup.py build --cpp_implementation
+python setup.py test --cpp_implementation
+python setup.py install --cpp_implementation
+# install from wheel
+python setup.py bdist_wheel --cpp_implementation
+pip install dist/protobuf-3.7.1-cp27-cp27mu-linux_ppc64le.whl --force-reinstall
+# verify
+python -c "import google.protobuf"
 ~~~
 
 ## bazel-0.25.0
