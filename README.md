@@ -189,6 +189,7 @@ pip install ../tensorflow_package/tensorflow-<version>.whl
 ~~~
 
 ## Opencv-python
+~~~
 git clone https://github.com/skvark/opencv-python.git
 cd opencv-python/
 git fetch --all --tags --prune
@@ -201,3 +202,4 @@ apt-get install libqt4-dev
 
 python setup.py bdist_wheel
 pip install dist/opencv_python-version.whl
+~~~
