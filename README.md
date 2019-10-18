@@ -82,7 +82,7 @@ env EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash ./compile.sh
 rsync -avP output/bazel /usr/bin
 ~~~
 
-## Advance Toolchain 12.0
+## Advance Toolchain 12.0 (only for Power user)
 [Doc site](https://developer.ibm.com/linuxonpower/advance-toolchain/advtool-installation/)
 ~~~
 wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/trusty/6976a827.gpg.key
